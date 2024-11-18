@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>辣妹</title>
+    <link href="https://fonts.googleapis.com/css2?family=LXGWenKai&display=swap" rel="stylesheet"> <!-- 引入字体 -->
+    <style>
+        body {
+            font-family: 'LXGWenKai', sans-serif; /* 设置字体 */
+            display: flex;
+            flex-direction: column; /* 使内容垂直排列 */
+            justify-content: center; /* 垂直居中 */
+            align-items: center; /* 水平居中 */
+            min-height: 100vh; /* 设置最小高度为视口高度 */
+            background-color: #FAF9DE; /* 设置背景颜色 */
+        }
+        .content {
+            max-width: 800px; /* 设置内容最大宽度 */
+            width: 100%; /* 容器宽度100% */
+            text-align: left; /* 正文左对齐 */
+            flex-grow: 1; /* 使内容区域占据剩余空间 */
+            padding: 20px; /* 添加内边距以保持内容不贴边 */
+        }
+        .centered {
+            text-align: center;
+        }
+        .page {
+            display: none; /* 默认隐藏所有页面 */
+            margin-bottom: 20px; /* 段落之间的间距 */
+        }
+        .active {
+            display: block; /* 仅显示当前活动页面 */
+        }
+        .paragraph {
+            text-indent: 2em; /* 缩进2个字符 */
+            margin: 0; /* 去掉段落的默认外边距 */
+        }
+        .pagination {
+            margin-top: 20px;
+            text-align: center; /* 按钮居中 */
+            padding: 10px; /* 添加内边距 */
+        }
+        .pagination button {
+            margin: 0 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>辣妹</h1>
+    <div class="content" id="content"></div>
+    <div class="pagination">
+        <button onclick="changePage(-1)">上一页</button>
+        <button onclick="changePage(1)">下一页</button>
+    </div>
+    <script>
+        let currentPage = 0; // 当前页面索引
+        const pages = []; // 用于存储页面元素
+
+        function showPage(index) {
+            pages.forEach((page, i) => {
+                page.classList.remove('active');
+                if (i === index) {
+                    page.classList.add('active');
+                }
+            });
+        }
+
+        function changePage(direction) {
+            currentPage += direction;
+            if (currentPage < 0) {
+                currentPage = 0;
+            } else if (currentPage >= pages.length) {
+                currentPage = pages.length - 1;
+            }
+            showPage(currentPage);
+        }
+
+        // 动态创建页面 div
+        const createPages = (num) => {
+            const contentDiv = document.getElementById('content');
+            for (let i = 1; i <= num; i++) {
+                const pageDiv = document.createElement('div');
+                pageDiv.className = 'page';
+                pageDiv.id = `page${i}`;
+                contentDiv.appendChild(pageDiv);
+                pages.push(pageDiv); // 将新创建的 div 存入 pages 数组
+            }
+        };
+
+        // 加载 view 文件夹下的 HTML 文件
+        const loadPages = async (num) => {
+            for (let i = 1; i <= num; i++) {
+                try {
+                    const response = await fetch(`view/view${i}.html`);
+                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                    const data = await response.text();
+                    pages[i - 1].innerHTML = data; // 将内容插入到对应的页面
+                } catch (error) {
+                    console.error(`加载 view/view${i}.html 失败: ${error}`);
+                }
+            }
+            showPage(currentPage); // 显示当前页面
+        };
+
+        const totalPages = 5; // 假设有 5 个页面
+        createPages(totalPages); // 创建页面 div
+        loadPages(totalPages); // 调用加载函数
+    </script>
+</body>
+</html>
