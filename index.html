@@ -57,7 +57,7 @@
     <script>
         let currentPage = 0; // 当前页面索引
         const pages = []; // 用于存储页面元素
-
+    
         function showPage(index) {
             pages.forEach((page, i) => {
                 page.classList.remove('active');
@@ -65,8 +65,9 @@
                     page.classList.add('active');
                 }
             });
+            window.scrollTo(0, 0); // 滚动到页面顶部
         }
-
+    
         function changePage(direction) {
             currentPage += direction;
             if (currentPage < 0) {
@@ -76,7 +77,7 @@
             }
             showPage(currentPage);
         }
-
+    
         // 动态创建页面 div
         const createPages = (num) => {
             const contentDiv = document.getElementById('content');
@@ -88,7 +89,7 @@
                 pages.push(pageDiv); // 将新创建的 div 存入 pages 数组
             }
         };
-
+    
         // 加载 view 文件夹下的 HTML 文件
         const loadPages = async (num) => {
             for (let i = 1; i <= num; i++) {
@@ -103,10 +104,11 @@
             }
             showPage(currentPage); // 显示当前页面
         };
-
-        const totalPages = 2; // 假设有 5 个页面
+    
+        const totalPages = 2; // 假设有 2 个页面
         createPages(totalPages); // 创建页面 div
         loadPages(totalPages); // 调用加载函数
     </script>
+
 </body>
 </html>
